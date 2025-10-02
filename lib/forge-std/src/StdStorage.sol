@@ -42,8 +42,8 @@ library stdStorageSafe {
 
     // Calls target contract with configured parameters
     function callTarget(StdStorage storage self) internal view returns (bool, bytes32) {
-        bytes memory cald = abi.encodePacked(self._sig, getCallParams(self));
-        (bool success, bytes memory rdat) = self._target.staticcall(cald);
+        bytes memory cd = abi.encodePacked(self._sig, getCallParams(self));
+        (bool success, bytes memory rdat) = self._target.staticcall(cd);
         bytes32 result = bytesToBytes32(rdat, 32 * self._depth);
 
         return (success, result);
@@ -123,7 +123,7 @@ library stdStorageSafe {
         if (reads.length == 0) {
             revert("stdStorage find(StdStorage): No storage use detected for target.");
         } else {
-            for (uint256 i = 0; i < reads.length; i++) {
+            for (uint256 i = reads.length; --i >= 0;) {
                 bytes32 prev = vm.load(who, reads[i]);
                 if (prev == bytes32(0)) {
                     emit WARNING_UninitedSlot(who, uint256(reads[i]));
